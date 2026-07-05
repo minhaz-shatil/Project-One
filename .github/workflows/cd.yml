@@ -7,17 +7,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      # Checkout source code
+      - uses: actions/checkout@v4   # updated to v4
 
+      # Set up JDK 17
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4 # updated to v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # Build WAR (skip tests for faster deploy)
       - name: Build WAR
         run: mvn clean package -DskipTests
 
+      # Copy WAR to Remote Tomcat
       - name: Copy WAR to Remote Tomcat
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -28,6 +32,7 @@ jobs:
           source: "target/project-one-0.0.1-SNAPSHOT.war"
           target: "/opt/tomcat/webapps/project-one.war"
 
+      # Restart Tomcat service
       - name: Restart Tomcat
         uses: appleboy/ssh-action@v0.1.7
         with:
