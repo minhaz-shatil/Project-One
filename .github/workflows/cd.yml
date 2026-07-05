@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "target/project-one-0.0.1-SNAPSHOT.war"
-          target: "/opt/tomcat/webapps/" 
+          target: "/opt/tomcat/webapps/"
 
       # Restart Tomcat service
       - name: Restart Tomcat
