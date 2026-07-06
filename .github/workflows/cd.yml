@@ -42,7 +42,6 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo systemctl stop tomcat11
             sudo mv /tmp/project-one-0.0.1-SNAPSHOT.war /var/lib/tomcat11/webapps/project-one.war
             sudo chown tomcat:tomcat /var/lib/tomcat11/webapps/project-one.war
             sudo systemctl restart tomcat11
