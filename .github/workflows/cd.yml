@@ -29,7 +29,7 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "project-one-0.0.1-SNAPSHOT.war"
+          source: "target/project-one-0.0.1-SNAPSHOT.war"
           target: "/var/lib/tomcat11/webapps/"
 
       # Restart Tomcat service
