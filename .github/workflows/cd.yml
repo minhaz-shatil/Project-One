@@ -41,4 +41,4 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo systemctl restart tomcat
+            sudo systemctl restart tomcat11
