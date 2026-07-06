@@ -31,6 +31,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "target/project-one-0.0.1-SNAPSHOT.war"
           target: "/var/lib/tomcat11/webapps/project-one.war"
+          strip_components: 2
 
       # Restart Tomcat service
       - name: Restart Tomcat
