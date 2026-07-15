@@ -47,7 +47,7 @@ jobs:
 
       # Upload WAR artifact for inspection/download
       - name: Upload WAR
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: project-one-war
           path: target/project-one-0.0.1-SNAPSHOT.war
