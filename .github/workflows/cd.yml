@@ -29,6 +29,9 @@ jobs:
 
             # Pull latest image
             docker pull ${{ secrets.DOCKER_IMAGE }}:latest
+            
+              docker logout
+
 
             # Stop and remove old container
             docker stop project-one || true
