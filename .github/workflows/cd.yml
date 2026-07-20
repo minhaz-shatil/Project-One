@@ -28,20 +28,20 @@ jobs:
               --password-stdin
             
             # Pull latest image
-            sudo docker pull ${{ secrets.DOCKER_IMAGE }}:latest
+             docker pull ${{ secrets.DOCKER_IMAGE }}:latest
             
-             sudo docker logout
+              docker logout
 
 
             # Stop and remove old container
-            sudo docker stop project-one || true
-            sudo docker rm project-one || true
+             docker stop project-one || true
+             docker rm project-one || true
 
             # Remove old image (optional)
-            sudo docker image prune -f
+             docker image prune -f
 
             # Run new container
-            sudo docker run -d \
+             docker run -d \
               --name project-one \
               --restart unless-stopped \
               -p 8080:8080 \
