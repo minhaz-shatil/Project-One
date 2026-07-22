@@ -101,11 +101,14 @@ pipeline {
     agent any
 
     environment {
+        REMOTE_HOST = "182.252.68.169"
+        REMOTE_PORT = "2222"
+        REMOTE_USER = "mist"
         SONAR_HOST_URL = credentials('SONAR_HOST_URL')
         SONAR_TOKEN    = credentials('SONAR_TOKEN')
-        REMOTE_HOST = credentials('REMOTE_HOST')
-        REMOTE_PORT = credentials('REMOTE_PORT')
-        REMOTE_USER = credentials('REMOTE_USER')
+//         REMOTE_HOST = credentials('REMOTE_HOST')
+//         REMOTE_PORT = credentials('REMOTE_PORT')
+//         REMOTE_USER = credentials('REMOTE_USER')
     }
 
     stages {
