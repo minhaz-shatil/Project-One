@@ -104,28 +104,35 @@ pipeline {
         REMOTE_HOST = "182.252.68.169"
         REMOTE_PORT = "2222"
         REMOTE_USER = "mist"
-       // SONAR_HOST_URL = credentials('SONAR_HOST_URL')
-       // SONAR_TOKEN    = credentials('SONAR_TOKEN')
-//         REMOTE_HOST = credentials('REMOTE_HOST')
-//         REMOTE_PORT = credentials('REMOTE_PORT')
-//         REMOTE_USER = credentials('REMOTE_USER')
     }
 
     stages {
-        stage('Test Jenkins') {
+
+        stage('Checkout') {
             steps {
-                echo 'Jenkins pipeline is working!'
+                checkout scm
             }
         }
 
-        stage('Check Environment') {
+        stage('Test Jenkins Environment') {
             steps {
                 sh '''
+                    echo "Jenkins pipeline is working!"
+
                     echo "Current directory:"
                     pwd
 
                     echo "Files:"
                     ls -la
+
+                    echo "Remote host:"
+                    echo $REMOTE_HOST
+
+                    echo "Remote port:"
+                    echo $REMOTE_PORT
+
+                    echo "Remote user:"
+                    echo $REMOTE_USER
 
                     echo "Java version:"
                     java -version || true
@@ -135,15 +142,35 @@ pipeline {
                 '''
             }
         }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
     }
 
     post {
         success {
-            echo 'Test pipeline completed successfully!'
+            echo 'Application build and test completed successfully!'
         }
 
         failure {
-            echo 'Test pipeline failed!'
+            echo 'Pipeline failed.'
+        }
+
+        always {
+            script {
+                if (env.WORKSPACE) {
+                    cleanWs()
+                }
+            }
         }
     }
 }
