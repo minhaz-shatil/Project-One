@@ -11,7 +11,7 @@ pipeline {
         SONAR_TOKEN    = credentials('SONAR_TOKEN')
 
         REMOTE_HOST = credentials('REMOTE_HOST')
-        REMOTE_PORT = "2222"//credentials('REMOTE_PORT')
+        REMOTE_PORT = credentials('REMOTE_PORT')
         REMOTE_USER = credentials('REMOTE_USER')
     }
 
