@@ -8,14 +8,14 @@ pipeline {
 
 
 
-    environment {
+//     environment {
 //         SONAR_HOST_URL = credentials('SONAR_HOST_URL')
 //         SONAR_TOKEN    = credentials('SONAR_TOKEN')
 //
 //         REMOTE_HOST = credentials('REMOTE_HOST')
 //         REMOTE_PORT = credentials('REMOTE_PORT')
 //         REMOTE_USER = credentials('REMOTE_USER')
-    }
+//    }
 
     stages {
 
