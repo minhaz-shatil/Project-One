@@ -85,7 +85,11 @@ pipeline {
         }
 
         always {
-            cleanWs()
-        }
+                script {
+                    if (env.WORKSPACE) {
+                        cleanWs()
+                    }
+                }
+            }
     }
 }
