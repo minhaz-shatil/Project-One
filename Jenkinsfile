@@ -96,9 +96,14 @@
 //     }
 // }
 
-
 pipeline {
-    agent any
+
+     agent any
+
+        tools {
+            maven 'Maven3'        // Configure in Jenkins: Manage Jenkins > Global Tool Configuration
+            jdk 'JDK17'           // Configure JDK 17 in Jenkins
+        }
 
     environment {
         REMOTE_HOST = "182.252.68.169"
