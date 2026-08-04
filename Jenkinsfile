@@ -104,6 +104,10 @@ pipeline {
         REMOTE_HOST = "182.252.68.169"
         REMOTE_PORT = "2222"
         REMOTE_USER = "mist"
+
+        SONAR_HOST_URL = "http://10.104.2.130:9000"
+        SONAR_PROJECT_KEY = "project-two"
+        SONAR_PROJECT_NAME = "project-two"
     }
 
     stages {
@@ -125,15 +129,6 @@ pipeline {
                     echo "Files:"
                     ls -la
 
-                    echo "Remote host:"
-                    echo $REMOTE_HOST
-
-                    echo "Remote port:"
-                    echo $REMOTE_PORT
-
-                    echo "Remote user:"
-                    echo $REMOTE_USER
-
                     echo "Java version:"
                     java -version || true
 
@@ -150,17 +145,18 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-                    steps {
-                        withSonarQubeEnv('SonarQube') {
-                            sh """
-                            mvn sonar:sonar \
-                            -Dsonar.host.url=$SONAR_HOST_URL \
-                            -Dsonar.login=$SONAR_TOKEN
-                            """
-                        }
-                    }
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                        mvn sonar:sonar \
+                          -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                          -Dsonar.projectName=$SONAR_PROJECT_NAME \
+                          -Dsonar.host.url=$SONAR_HOST_URL \
+                          -Dsonar.token=$SONAR_TOKEN
+                    '''
                 }
-
+            }
+        }
 
         stage('Run Tests') {
             steps {
@@ -171,7 +167,7 @@ pipeline {
 
     post {
         success {
-            echo 'Application build and test completed successfully!'
+            echo 'Application build and SonarQube scan completed successfully!'
         }
 
         failure {
@@ -179,11 +175,7 @@ pipeline {
         }
 
         always {
-            script {
-                if (env.WORKSPACE) {
-                    cleanWs()
-                }
-            }
+            cleanWs()
         }
     }
 }
