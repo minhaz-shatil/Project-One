@@ -153,17 +153,29 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        mvn sonar:sonar \
-                          -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                          -Dsonar.projectName=$SONAR_PROJECT_NAME \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.token=$SONAR_TOKEN
-                    '''
-                }
+                sh '''
+                    mvn sonar:sonar \
+                      -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                      -Dsonar.projectName=$SONAR_PROJECT_NAME \
+                      -Dsonar.host.url=$SONAR_HOST_URL \
+                      -Dsonar.token=$SONAR_TOKEN
+                '''
             }
         }
+
+//         stage('SonarQube Analysis') {
+//             steps {
+//                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+//                     sh '''
+//                         mvn sonar:sonar \
+//                           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+//                           -Dsonar.projectName=$SONAR_PROJECT_NAME \
+//                           -Dsonar.host.url=$SONAR_HOST_URL \
+//                           -Dsonar.token=$SONAR_TOKEN
+//                     '''
+//                 }
+//             }
+//         }
 
         stage('Run Tests') {
             steps {
