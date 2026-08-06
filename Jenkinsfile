@@ -102,7 +102,7 @@ pipeline {
 
         tools {
             maven 'Maven3'        // Configure in Jenkins: Manage Jenkins > Global Tool Configuration
-            jdk 'JDK17'           // Configure JDK 17 in Jenkins
+//             jdk 'JDK17'           // Configure JDK 17 in Jenkins
         }
 
     environment {
@@ -110,7 +110,7 @@ pipeline {
         REMOTE_PORT = "2222"
         REMOTE_USER = "mist"
 
-        SONAR_HOST_URL = "http://10.104.2.130:9000"
+        SONAR_HOST_URL = "10.104.2.130:9000"
         SONAR_PROJECT_KEY = "project-two"
         SONAR_PROJECT_NAME = "project-two"
     }
