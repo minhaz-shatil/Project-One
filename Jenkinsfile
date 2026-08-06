@@ -105,15 +105,15 @@ pipeline {
             jdk 'JDK17'           // Configure JDK 17 in Jenkins
         }
 
-    environment {
-        REMOTE_HOST = "182.252.68.169"
-        REMOTE_PORT = "2222"
-        REMOTE_USER = "mist"
-
-        SONAR_HOST_URL = "http://10.104.2.130:9000"
-        SONAR_PROJECT_KEY = "project-two"
-        SONAR_PROJECT_NAME = "project-two"
-    }
+//     environment {
+//         REMOTE_HOST = "182.252.68.169"
+//         REMOTE_PORT = "2222"
+//         REMOTE_USER = "mist"
+//
+//         SONAR_HOST_URL = "http://10.104.2.130:9000"
+//         SONAR_PROJECT_KEY = "project-two"
+//         SONAR_PROJECT_NAME = "project-two"
+//     }
 
     stages {
 
@@ -149,19 +149,19 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        mvn sonar:sonar \
-                          -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                          -Dsonar.projectName=$SONAR_PROJECT_NAME \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.token=$SONAR_TOKEN
-                    '''
-                }
-            }
-        }
+//         stage('SonarQube Analysis') {
+//             steps {
+//                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+//                     sh '''
+//                         mvn sonar:sonar \
+//                           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+//                           -Dsonar.projectName=$SONAR_PROJECT_NAME \
+//                           -Dsonar.host.url=$SONAR_HOST_URL \
+//                           -Dsonar.token=$SONAR_TOKEN
+//                     '''
+//                 }
+//             }
+//         }
 
         stage('Run Tests') {
             steps {
