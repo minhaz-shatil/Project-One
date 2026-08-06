@@ -115,6 +115,9 @@ pipeline {
         SONAR_PROJECT_NAME = "project-two"
         SONAR_TOKEN = "sqp_f398602d75acc3611634dc7c88db1e2b450cad0d"
 
+
+        DOCKER_IMAGE = "shatil06/project-two"
+        DOCKER_TAG = "latest"
     }
 
     stages {
@@ -163,25 +166,45 @@ pipeline {
             }
         }
 
-//         stage('SonarQube Analysis') {
-//             steps {
-//                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-//                     sh '''
-//                         mvn sonar:sonar \
-//                           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-//                           -Dsonar.projectName=$SONAR_PROJECT_NAME \
-//                           -Dsonar.host.url=$SONAR_HOST_URL \
-//                           -Dsonar.token=$SONAR_TOKEN
-//                     '''
-//                 }
-//             }
-//         }
+
 
         stage('Run Tests') {
             steps {
                 sh 'mvn test'
             }
         }
+
+
+           stage('Docker Login') {
+                    steps {
+
+                        withCredentials([
+                            usernamePassword(
+                                credentialsId: 'dockerhub-creds',
+                                usernameVariable: 'DOCKER_USERNAME',
+                                passwordVariable: 'DOCKER_PASSWORD'
+                            )
+                        ]) {
+
+                            sh '''
+                                echo $DOCKER_PASSWORD | docker login \
+                                -u $DOCKER_USERNAME \
+                                --password-stdin
+                            '''
+                        }
+                    }
+                }
+
+
+                stage('Docker Push') {
+                    steps {
+                        sh '''
+                            docker push $DOCKER_IMAGE:$DOCKER_TAG
+                        '''
+                    }
+                }
+
+
     }
 
     post {
