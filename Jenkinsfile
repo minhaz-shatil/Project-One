@@ -113,6 +113,8 @@ pipeline {
         SONAR_HOST_URL = "http://10.104.2.130:9000"
         SONAR_PROJECT_KEY = "project-two"
         SONAR_PROJECT_NAME = "project-two"
+        SONAR_TOKEN = "sqp_f398602d75acc3611634dc7c88db1e2b450cad0d"
+
     }
 
     stages {
