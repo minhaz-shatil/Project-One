@@ -154,7 +154,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 sh '''
-                    mvn sonar:sonar \
+                    mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                       -Dsonar.projectKey=$SONAR_PROJECT_KEY \
                       -Dsonar.projectName=$SONAR_PROJECT_NAME \
                       -Dsonar.host.url=$SONAR_HOST_URL \
