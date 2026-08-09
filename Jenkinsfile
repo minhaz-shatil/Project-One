@@ -120,106 +120,209 @@ pipeline {
         DOCKER_IMAGE = "shatil06/project-two"
         DOCKER_TAG = "latest"
     }
+     stages {
+            stage('Check Environment') {
+                steps {
+                    sh '''
+                        echo "Java:"
+                        java -version
 
-    stages {
+                        echo "Maven:"
+                        mvn -version
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Test Jenkins Environment') {
-            steps {
-                sh '''
-                    echo "Jenkins pipeline is working!"
-
-                    echo "Current directory:"
-                    pwd
-
-                    echo "Files:"
-                    ls -la
-
-                    echo "Java version:"
-                    java -version || true
-
-                    echo "Maven version:"
-                    mvn -version || true
-                '''
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'mvn clean package'
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                sh '''
-                    mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                      -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                      -Dsonar.projectName=$SONAR_PROJECT_NAME \
-                      -Dsonar.host.url=$SONAR_HOST_URL \
-                      -Dsonar.token=$SONAR_TOKEN
-                '''
-            }
-        }
-
-
-
-        stage('Run Tests') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-
-           stage('Docker Login') {
-                    steps {
-
-                        withCredentials([
-                            usernamePassword(
-                                credentialsId: 'dockerhub-creds',
-                                usernameVariable: 'DOCKER_USERNAME',
-                                passwordVariable: 'DOCKER_PASSWORD'
-                            )
-                        ]) {
-
-                            sh '''
-                                echo $DOCKER_PASSWORD | docker login \
-                                -u $DOCKER_USERNAME \
-                                --password-stdin
-                            '''
-                        }
-                    }
+                        echo "Docker:"
+                        docker --version
+                    '''
                 }
+            }
 
+            stage('Checkout') {
+                steps {
+                    checkout scm
+                }
+            }
 
+            stage('Build') {
+                steps {
+                    sh 'mvn clean package'
+                }
+            }
 
-                stage('Docker Push') {
-                    steps {
+            stage('SonarQube Analysis') {
+                steps {
+                    withCredentials([
+                        string(
+                            credentialsId: 'sonarqube-token',
+                            variable: 'SONAR_TOKEN'
+                        )
+                    ]) {
                         sh '''
-                            docker push $DOCKER_IMAGE:$DOCKER_TAG
+                            mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                                -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
+                                -Dsonar.projectName="$SONAR_PROJECT_NAME" \
+                                -Dsonar.host.url="$SONAR_HOST_URL" \
+                                -Dsonar.token="$SONAR_TOKEN"
                         '''
                     }
                 }
+            }
 
+            stage('Run Tests') {
+                steps {
+                    sh 'mvn test'
+                }
+            }
 
-    }
+            stage('Docker Login') {
+                steps {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'dockerhub-creds',
+                            usernameVariable: 'DOCKER_USERNAME',
+                            passwordVariable: 'DOCKER_PASSWORD'
+                        )
+                    ]) {
+                        sh '''
+                            echo "$DOCKER_PASSWORD" | docker login \
+                                --username "$DOCKER_USERNAME" \
+                                --password-stdin
+                        '''
+                    }
+                }
+            }
 
-    post {
-        success {
-            echo 'Application build and SonarQube scan completed successfully!'
+            stage('Docker Build') {
+                steps {
+                    sh '''
+                        docker build \
+                            -t "$DOCKER_IMAGE:$DOCKER_TAG" \
+                            .
+                    '''
+                }
+            }
+
+            stage('Docker Push') {
+                steps {
+                    sh '''
+                        docker push "$DOCKER_IMAGE:$DOCKER_TAG"
+                    '''
+                }
+            }
         }
 
-        failure {
-            echo 'Pipeline failed.'
+        post {
+            success {
+                echo 'Pipeline completed successfully!'
+            }
+
+            failure {
+                echo 'Pipeline failed.'
+            }
+
+            always {
+                cleanWs()
+            }
         }
 
-        always {
-            cleanWs()
-        }
-    }
+//     stages {
+//
+//         stage('Checkout') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+//
+//         stage('Test Jenkins Environment') {
+//             steps {
+//                 sh '''
+//                     echo "Jenkins pipeline is working!"
+//
+//                     echo "Current directory:"
+//                     pwd
+//
+//                     echo "Files:"
+//                     ls -la
+//
+//                     echo "Java version:"
+//                     java -version || true
+//
+//                     echo "Maven version:"
+//                     mvn -version || true
+//                 '''
+//             }
+//         }
+//
+//         stage('Build') {
+//             steps {
+//                 sh 'mvn clean package'
+//             }
+//         }
+//
+//         stage('SonarQube Analysis') {
+//             steps {
+//                 sh '''
+//                     mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+//                       -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+//                       -Dsonar.projectName=$SONAR_PROJECT_NAME \
+//                       -Dsonar.host.url=$SONAR_HOST_URL \
+//                       -Dsonar.token=$SONAR_TOKEN
+//                 '''
+//             }
+//         }
+//
+//
+//
+//         stage('Run Tests') {
+//             steps {
+//                 sh 'mvn test'
+//             }
+//         }
+//
+//
+//            stage('Docker Login') {
+//                     steps {
+//
+//                         withCredentials([
+//                             usernamePassword(
+//                                 credentialsId: 'dockerhub-creds',
+//                                 usernameVariable: 'DOCKER_USERNAME',
+//                                 passwordVariable: 'DOCKER_PASSWORD'
+//                             )
+//                         ]) {
+//
+//                             sh '''
+//                                 echo $DOCKER_PASSWORD | docker login \
+//                                 -u $DOCKER_USERNAME \
+//                                 --password-stdin
+//                             '''
+//                         }
+//                     }
+//                 }
+//
+//
+//
+//                 stage('Docker Push') {
+//                     steps {
+//                         sh '''
+//                             docker push $DOCKER_IMAGE:$DOCKER_TAG
+//                         '''
+//                     }
+//                 }
+//
+//
+//     }
+//
+//     post {
+//         success {
+//             echo 'Application build and SonarQube scan completed successfully!'
+//         }
+//
+//         failure {
+//             echo 'Pipeline failed.'
+//         }
+//
+//         always {
+//             cleanWs()
+//         }
+//     }
 }
