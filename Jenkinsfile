@@ -115,7 +115,7 @@ pipeline {
         SONAR_PROJECT_NAME = "project-two"
         //SONAR_TOKEN = "sqp_66f5326412c794e08a14813239edce9701f9f193";//"sqp_f398602d75acc3611634dc7c88db1e2b450cad0d"
 
-        DOCKER_PASSWORD = "P@%%w0rd"
+        DOCKER_PASSWORD = "P@%%w0rd#"
         DOCKER_USERNAME = "shatil06"
         DOCKER_IMAGE = "shatil06/project-two"
         DOCKER_TAG = "latest"
