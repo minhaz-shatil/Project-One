@@ -208,24 +208,28 @@ pipeline {
                 }
             }
 
-            stage('Deploy to Tomcat') {
-                steps {
-                    sshagent(credentials: ['SSH_PRIVATE_KEY']) {
-                        sh """
-                        scp -P ${REMOTE_PORT} \
-                        -o StrictHostKeyChecking=no \
-                        target/project-one-0.0.1-SNAPSHOT.war \
-                        ${REMOTE_USER}@${REMOTE_HOST}:/tmp/
-                        ssh -p ${REMOTE_PORT} \
-                        -o StrictHostKeyChecking=no \
-                        ${REMOTE_USER}@${REMOTE_HOST} << EOF
-                        sudo mv /tmp/project-one-0.0.1-SNAPSHOT.war /var/lib/tomcat11/webapps/project-one.war
-                        sudo chown tomcat:tomcat /var/lib/tomcat11/webapps/project-one.war
-                        sudo systemctl restart tomcat11
-                        EOF
-                        """
-                    }
-                }
+
+stage('Deploy to Tomcat') {
+    steps {
+        sshagent(credentials: ['SSH_PRIVATE_KEY']) {
+            sh """
+                scp -P ${REMOTE_PORT} \
+                    -o StrictHostKeyChecking=no \
+                    target/project-one-0.0.1-SNAPSHOT.war \
+                    ${REMOTE_USER}@${REMOTE_HOST}:/tmp/
+
+                ssh -p ${REMOTE_PORT} \
+                    -o StrictHostKeyChecking=no \
+                    ${REMOTE_USER}@${REMOTE_HOST} << EOF
+                    sudo mv /tmp/project-one-0.0.1-SNAPSHOT.war /var/lib/tomcat11/webapps/project-one.war
+                    sudo chown tomcat:tomcat /var/lib/tomcat11/webapps/project-one.war
+                    sudo systemctl restart tomcat11
+                EOF
+            """
+        }
+    }
+}
+
         }
 
         post {
