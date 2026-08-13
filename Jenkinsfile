@@ -204,9 +204,7 @@ pipeline {
 
             stage('Docker Push') {
                 steps {
-                    sh '''
-                        docker push "$DOCKER_IMAGE:$DOCKER_TAG"
-                    '''
+                    sh 'docker push shatil06/project-one:latest'
                 }
             }
         }
