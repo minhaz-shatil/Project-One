@@ -108,7 +108,7 @@ pipeline {
     environment {
 //         REMOTE_HOST = "182.252.68.169"
 //         REMOTE_PORT = "2222"
-//         REMOTE_USER = "mist"
+         REMOTE_USER = "mist"
 
         SONAR_HOST_URL = "http://10.104.2.130:9000"
         SONAR_PROJECT_KEY = "project-two"
@@ -208,27 +208,50 @@ pipeline {
                 }
             }
 
-
 stage('Deploy to Tomcat') {
     steps {
         sshagent(credentials: ['SSH_PRIVATE_KEY']) {
             sh """
-                scp -P ${REMOTE_PORT} \
-                    -o StrictHostKeyChecking=no \
-                    target/project-one-0.0.1-SNAPSHOT.war \
-                    ${REMOTE_USER}@${REMOTE_HOST}:/tmp/
-
                 ssh -p ${REMOTE_PORT} \
                     -o StrictHostKeyChecking=no \
-                    ${REMOTE_USER}@${REMOTE_HOST} << EOF
-                    sudo mv /tmp/project-one-0.0.1-SNAPSHOT.war /var/lib/tomcat11/webapps/project-one.war
-                    sudo chown tomcat:tomcat /var/lib/tomcat11/webapps/project-one.war
-                    sudo systemctl restart tomcat11
-                EOF
+                    ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
+
+                    docker pull ${REMOTE_USER}/project-one:latest
+
+                    docker stop project-one || true
+                    docker rm project-one || true
+
+                    docker run -d \
+                        --name project-one \
+                        --restart unless-stopped \
+                        -p 8080:8080 \
+                        ${REMOTE_USER}/project-one:latest
+
+                    EOF
             """
         }
     }
 }
+// stage('Deploy to Tomcat') {
+//     steps {
+//         sshagent(credentials: ['SSH_PRIVATE_KEY']) {
+//             sh """
+//                 scp -P ${REMOTE_PORT} \
+//                     -o StrictHostKeyChecking=no \
+//                     target/project-one-0.0.1-SNAPSHOT.war \
+//                     ${REMOTE_USER}@${REMOTE_HOST}:/tmp/
+//
+//                 ssh -p ${REMOTE_PORT} \
+//                     -o StrictHostKeyChecking=no \
+//                     ${REMOTE_USER}@${REMOTE_HOST} << EOF
+//                     sudo mv /tmp/project-one-0.0.1-SNAPSHOT.war /var/lib/tomcat11/webapps/project-one.war
+//                     sudo chown tomcat:tomcat /var/lib/tomcat11/webapps/project-one.war
+//                     sudo systemctl restart tomcat11
+//                 EOF
+//             """
+//         }
+//     }
+// }
 
         }
 
