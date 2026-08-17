@@ -106,9 +106,9 @@ pipeline {
         }
 
     environment {
-        REMOTE_HOST = "182.252.68.169"
-        REMOTE_PORT = "2222"
-        REMOTE_USER = "mist"
+//         REMOTE_HOST = "182.252.68.169"
+//         REMOTE_PORT = "2222"
+//         REMOTE_USER = "mist"
 
         SONAR_HOST_URL = "http://10.104.2.130:9000"
         SONAR_PROJECT_KEY = "project-two"
