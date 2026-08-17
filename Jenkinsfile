@@ -208,11 +208,20 @@ pipeline {
                 }
             }
 
+
+
+
 stage('Deploy to Tomcat') {
     steps {
-        sshagent(credentials: ['SSH_PRIVATE_KEY']) {
+        withCredentials([
+            sshUserPrivateKey(
+                credentialsId: 'SSH_PRIVATE_KEY',
+                keyFileVariable: 'SSH_KEY'
+            )
+        ]) {
             sh """
-                ssh -p ${REMOTE_PORT} \
+                ssh -i "\$SSH_KEY" \
+                    -p ${REMOTE_PORT} \
                     -o StrictHostKeyChecking=no \
                     ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
 
@@ -225,13 +234,39 @@ stage('Deploy to Tomcat') {
                         --name project-one \
                         --restart unless-stopped \
                         -p 8080:8080 \
-                        ${REMOTE_USER}/project-one:latest
+                       ${REMOTE_USER}/project-one:latest
 
                     EOF
             """
         }
     }
 }
+
+
+// stage('Deploy to Tomcat') {
+//     steps {
+//         sshagent(credentials: ['SSH_PRIVATE_KEY']) {
+//             sh """
+//                 ssh -p ${REMOTE_PORT} \
+//                     -o StrictHostKeyChecking=no \
+//                     ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
+//
+//                     docker pull ${REMOTE_USER}/project-one:latest
+//
+//                     docker stop project-one || true
+//                     docker rm project-one || true
+//
+//                     docker run -d \
+//                         --name project-one \
+//                         --restart unless-stopped \
+//                         -p 8080:8080 \
+//                         ${REMOTE_USER}/project-one:latest
+//
+//                     EOF
+//             """
+//         }
+//     }
+// }
 // stage('Deploy to Tomcat') {
 //     steps {
 //         sshagent(credentials: ['SSH_PRIVATE_KEY']) {
