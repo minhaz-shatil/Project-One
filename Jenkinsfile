@@ -225,7 +225,7 @@ stage('Deploy to Tomcat') {
                     -o StrictHostKeyChecking=no \
                     ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
 
-                    docker pull ${REMOTE_USER}/project-one:latest
+                    docker pull ${DOCKER_USERNAME}/project-one:latest
 
                     docker stop project-one || true
                     docker rm project-one || true
@@ -234,7 +234,7 @@ stage('Deploy to Tomcat') {
                         --name project-one \
                         --restart unless-stopped \
                         -p 8080:8080 \
-                       ${REMOTE_USER}/project-one:latest
+                       ${DOCKER_USERNAME}/project-one:latest
 
                     EOF
             """
