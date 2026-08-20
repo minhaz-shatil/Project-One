@@ -8,17 +8,15 @@ pipeline {
         }
 
     environment {
-         REMOTE_HOST = "182.252.68.169"
-         REMOTE_PORT = "2222"
-         REMOTE_USER = "mist"
+        REMOTE_HOST = "182.252.68.169"
+        REMOTE_PORT = "2222"
+        REMOTE_USER = "mist"
 
         SONAR_HOST_URL = "http://10.104.2.130:9000"
         SONAR_PROJECT_KEY = "project-two"
         SONAR_PROJECT_NAME = "project-two"
-        //SONAR_TOKEN = "sqp_66f5326412c794e08a14813239edce9701f9f193";//"sqp_f398602d75acc3611634dc7c88db1e2b450cad0d"
 
-//         DOCKER_PASSWORD = "P@%%w0rd#"
-         DOCKER_USERNAME = "shatil06"
+        DOCKER_USERNAME = "shatil06"
         DOCKER_IMAGE = "shatil06/project-two"
         DOCKER_TAG = "latest"
     }
@@ -136,34 +134,3 @@ pipeline {
             }
      }
 }
-// stage('Deploy to Tomcat') {
-//     steps {
-//         withCredentials([
-//             sshUserPrivateKey(
-//                 credentialsId: 'SSH_PRIVATE_KEY',
-//                 keyFileVariable: 'SSH_KEY'
-//             )
-//         ]) {
-//             sh """
-//                 ssh -i "\$SSH_KEY" \
-//                     -p ${REMOTE_PORT} \
-//                     -o StrictHostKeyChecking=no \
-//                     ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
-//
-//                     docker pull ${DOCKER_USERNAME}/project-one:latest
-//
-//                     docker stop project-one || true
-//                     docker rm project-one || true
-//
-//                     docker run -d \
-//                         --name project-one \
-//                         --restart unless-stopped \
-//                         -p 8085:8080 \
-//                        ${DOCKER_USERNAME}/project-one:latest
-//
-//                     EOF
-//             """
-//         }
-//     }
-// }
-
