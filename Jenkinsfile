@@ -233,7 +233,7 @@ stage('Deploy to Tomcat') {
                     docker run -d \
                         --name project-one \
                         --restart unless-stopped \
-                        -p 8080:8080 \
+                        -p 8085:8080 \
                        ${DOCKER_USERNAME}/project-one:latest
 
                     EOF
